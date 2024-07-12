@@ -1,0 +1,19 @@
+.calendar-input {
+  position: relative;
+  display: inline-block;
+}
+
+.calendar-input input {
+  padding: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 150px;
+}
+
+.calendar-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
