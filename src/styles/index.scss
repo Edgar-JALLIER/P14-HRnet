@@ -1,29 +1,112 @@
 @import "./base/normalize";
-@import "./components/calendar"; // Add this line to import the components
+@import "./components/calendar";
+@import "./components/table";
 
-.title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.container {
+.container-employees {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-label {
-  display: block;
-  margin-top: 1rem;
-  margin-bottom: 10px;
+h1 {
+  font-size: 2rem;
+  text-align: center;
 }
 
-.address {
-  margin-top: 10px;
+.box-center {
+  display: flex;
+  justify-content: center;
+}
+
+.link-table {
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+  background-color: #007bff;
+  padding: 10px 20px;
+  font-weight: 500;
+  color: #fff;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+.container-home {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 10px 0px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+
+  input:focus,
+  select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+
+  fieldset {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+
+  legend {
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0 10px;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+}
+
+.select-input {
+  margin-bottom: 15px;
 }
 
 .error-message {
   color: red;
+  font-size: 0.9rem;
+  margin-top: -10px;
+  margin-bottom: 10px;
 }

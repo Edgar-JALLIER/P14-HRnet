@@ -1,15 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { FormData, UserState } from "../utils/interface";
+
+const initialState: UserState = {
+  userInfo: [],
+  loading: false,
+  error: false,
+};
 
 const userSlice = createSlice({
   name: "user",
-  initialState: {
-    userInfo: null,
-    loading: false,
-    error: false,
-  },
+  initialState,
   reducers: {
-    setUser: (state, action) => {
-      state.userInfo = action.payload;
+    setNewUser: (state, action: PayloadAction<FormData>) => {
+      state.userInfo.push(action.payload);
       state.loading = false;
       state.error = false;
     },
@@ -22,5 +25,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, setLoading, setError } = userSlice.actions;
+export const { setNewUser, setLoading, setError } = userSlice.actions;
 export default userSlice;

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ErrorMessage, Field, useFormikContext } from "formik";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { format, isValid } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 
 const CalendarInput: React.FC<{ name: string }> = ({ name }) => {
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -30,28 +30,32 @@ const CalendarInput: React.FC<{ name: string }> = ({ name }) => {
   }, []);
 
   const handleDateChange = (value: Date) => {
-    const formattedDate = isValid(value) ? format(value, "dd/MM/yyyy") : "";
-
-    console.log("Date sélectionnée formatée :", formattedDate);
-
-    formik.setFieldValue(name, formattedDate); // Mettre à jour la valeur dans Formik avec la date formatée
+    if (isValid(value)) {
+      formik.setFieldValue(name, value); // Met à jour Formik avec la date sous forme d'objet Date
+    }
     toggleCalendar();
   };
 
   return (
     <div className="calendar-input" ref={calendarRef}>
       <Field name={name}>
-        {({ field }: { field: any }) => (
-          <input
-            {...field}
-            type="text"
-            onClick={() => {
-              toggleCalendar();
-            }}
-            value={field.value}
-            readOnly
-          />
-        )}
+        {({ field }: { field: any }) => {
+          const formattedValue = isValid(new Date(field.value))
+            ? format(new Date(field.value), "dd/MM/yyyy")
+            : "";
+
+          return (
+            <input
+              {...field}
+              type="text"
+              onClick={() => {
+                toggleCalendar();
+              }}
+              value={formattedValue} // Affiche la date formatée
+              readOnly
+            />
+          );
+        }}
       </Field>
       {showCalendar && (
         <div className="calendar-container">
@@ -60,8 +64,8 @@ const CalendarInput: React.FC<{ name: string }> = ({ name }) => {
             value={
               isValid(new Date(formik.values[name]))
                 ? new Date(formik.values[name])
-                : format(new Date(), "dd/MM/yyyy")
-            } // Accès aux valeurs via formik.values
+                : new Date()
+            } // Utilise la valeur réelle (Date) de Formik pour le calendrier
           />
         </div>
       )}

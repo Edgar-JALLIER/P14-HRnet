@@ -1,0 +1,41 @@
+.table-container {
+  overflow-x: auto; /* Pour permettre le défilement horizontal si nécessaire */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Pour supprimer les espaces entre les bordures des cellules */
+}
+
+th,
+td {
+  padding: 8px 12px; /* Espacement interne des cellules */
+  border: 1px solid #ddd; /* Bordures des cellules */
+  text-align: left; /* Alignement du texte à gauche */
+}
+
+th {
+  background-color: #dddddd; /* Couleur de fond des en-têtes */
+}
+
+tr:nth-child(even) {
+  background-color: #ddeef1; /* Alternance des couleurs de lignes */
+}
+
+.pagination {
+  display: flex;
+  margin-top: 10px;
+  justify-content: space-between;
+  &-button__previous {
+    margin-right: 10px;
+  }
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  & label {
+    margin: 0 10px 0 0;
+  }
+}

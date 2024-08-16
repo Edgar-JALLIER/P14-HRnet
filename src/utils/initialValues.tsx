@@ -8,6 +8,6 @@ export const initialFormValues: FormData = {
   street: "",
   city: "",
   state: { value: "", label: "", abbreviation: "" },
-  zipCode: 0,
+  zipCode: "",
   department: { value: "", label: "" },
 };

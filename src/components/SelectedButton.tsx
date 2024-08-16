@@ -6,14 +6,12 @@ import { initialFormValues } from "../utils/initialValues";
 
 interface ISelectedButtonProps {
   name: string;
-  label: string;
   options: City[];
   onChange: (value: City | null) => void;
 }
 
 const SelectedButton: React.FC<ISelectedButtonProps> = ({
   name,
-  label,
   options,
   onChange,
 }) => {
@@ -43,6 +41,7 @@ const SelectedButton: React.FC<ISelectedButtonProps> = ({
         {({ field }: { field: any }) => (
           <Select
             {...field}
+            className="select-input"
             value={field.value}
             options={options}
             onChange={handleSelectChange}

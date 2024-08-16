@@ -17,6 +17,16 @@ export interface FormData {
   street: string;
   city: string;
   state: City;
-  zipCode: number | null;
+  zipCode: string;
   department: Department;
+}
+
+export interface UserState {
+  userInfo: FormData[];
+  loading: boolean;
+  error: boolean;
+}
+
+export interface RootState {
+  user: UserState;
 }

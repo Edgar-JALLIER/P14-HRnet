@@ -7,16 +7,17 @@ import "react-calendar/dist/Calendar.css";
 import InputText from "../components/InputText";
 import { useEffect, useState } from "react";
 import { initialFormValues } from "../utils/initialValues";
-import InputNumber from "../components/inputNumber";
-import { City } from "../utils/interface";
+import { City, RootState } from "../utils/interface";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import userSlice from "../redux/userSlice";
 
 const HomePage = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => (state as RootState).user.loading);
+  const error = useSelector((state) => (state as RootState).user.error);
   const [formData, setFormData] = useState(initialFormValues);
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  // };
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -46,27 +47,48 @@ const HomePage = () => {
     console.log("test useeffect", formData);
   }, [formData]);
   const handleInputChange =
-    (name: string) => (value: string | number | Date | City | null) => {
+    (name: string) => (value: string | Date | City | null) => {
       console.log("test avant", value);
       setFormData((prevState) => ({
         ...prevState,
         [name]: value,
       }));
-      console.log("test", formData);
     };
   return (
     <>
       <div className="title">
         <h1>HRnet</h1>
       </div>
-      <div className="container">
-        <Link to="/employee">View Current Employees</Link>
+      <div className="container-home">
+        <div className="box-center">
+          <Link to="/employee" className="link-table">
+            View Current Employees
+          </Link>
+        </div>
+
         <h2>Create Employee</h2>
         <Formik
           initialValues={initialFormValues}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log(values);
+          onSubmit={async (values, actions) => {
+            actions.setSubmitting(true); // Démarre la soumission
+            try {
+              dispatch(userSlice.actions.setNewUser(values));
+              console.log("formValues réussi", values);
+              // actions.resetForm(); // Réinitialise le formulaire après une soumission réussie
+            } catch (error) {
+              console.error(
+                "Error lors de la récupération des données:",
+                error
+              );
+              dispatch(
+                userSlice.actions.setError(
+                  "Impossible de récupérer les données"
+                )
+              );
+            } finally {
+              actions.setSubmitting(false); // Réactive le bouton de soumission
+            }
           }}
         >
           <Form>
@@ -90,7 +112,6 @@ const HomePage = () => {
               <label htmlFor="state">State</label>
               <SelectedButton
                 name="state"
-                label={"State"}
                 options={states}
                 onChange={handleInputChange("state")}
               />
@@ -101,11 +122,12 @@ const HomePage = () => {
             <label htmlFor="department">Department</label>
             <SelectedButton
               name="department"
-              label={"Department"}
               options={department}
               onChange={handleInputChange("department")}
             />
             <button type="submit">Submit</button>
+            {loading && <p>Chargement ...</p>}
+            {error && <p className="error-message">{error}</p>}
           </Form>
         </Formik>
       </div>
