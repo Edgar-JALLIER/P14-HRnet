@@ -11,6 +11,9 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    loadFakeData: (state, action) => {
+      state.userInfo = action.payload.users;
+    },
     setNewUser: (state, action: PayloadAction<FormData>) => {
       state.userInfo.push(action.payload);
       state.loading = false;

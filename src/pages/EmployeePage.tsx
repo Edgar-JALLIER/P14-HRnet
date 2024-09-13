@@ -9,7 +9,9 @@ const EmployeePage = () => {
     <div id="employee-div" className="container-employees">
       <h1>Current Employees</h1>
       <Table data={select}></Table>
-      <Link to="/">Home</Link>
+      <Link to="/" className="link-home">
+        Home
+      </Link>
     </div>
   );
 };

@@ -7,17 +7,57 @@ import "react-calendar/dist/Calendar.css";
 import InputText from "../components/InputText";
 import { useEffect, useState } from "react";
 import { initialFormValues } from "../utils/initialValues";
-import { City, RootState } from "../utils/interface";
-import { Formik, Form } from "formik";
+import { City, FormData, RootState } from "../utils/interface";
+import { Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import userSlice from "../redux/userSlice";
+import Modal from "modal-react-classico";
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const loading = useSelector((state) => (state as RootState).user.loading);
   const error = useSelector((state) => (state as RootState).user.error);
   const [formData, setFormData] = useState(initialFormValues);
+  const [formActions, setFormActions] =
+    useState<FormikHelpers<FormData> | null>(null);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    fetch("/fake-data.json")
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch(userSlice.actions.loadFakeData(data));
+      });
+  }, [dispatch]);
+
+  const handleOpenModal = (
+    values: FormData,
+    actions: FormikHelpers<FormData>
+  ) => {
+    setFormData(values);
+    setFormActions(actions);
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleConfirm = async () => {
+    // Soumettre le formulaire si l'utilisateur confirme
+    try {
+      dispatch(userSlice.actions.setNewUser(formData));
+      console.log("Form submission successful", formData);
+      formActions!.resetForm();
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      dispatch(userSlice.actions.setError("Unable to submit form"));
+    } finally {
+      setIsOpen(false);
+    }
+  };
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -43,12 +83,9 @@ const HomePage = () => {
       .matches(/^\d{5}$/, "Zip code must be exactly 5 digits")
       .required("Zip code is required"),
   });
-  useEffect(() => {
-    console.log("test useeffect", formData);
-  }, [formData]);
+
   const handleInputChange =
     (name: string) => (value: string | Date | City | null) => {
-      console.log("test avant", value);
       setFormData((prevState) => ({
         ...prevState,
         [name]: value,
@@ -71,24 +108,7 @@ const HomePage = () => {
           initialValues={initialFormValues}
           validationSchema={validationSchema}
           onSubmit={async (values, actions) => {
-            actions.setSubmitting(true); // Démarre la soumission
-            try {
-              dispatch(userSlice.actions.setNewUser(values));
-              console.log("formValues réussi", values);
-              // actions.resetForm(); // Réinitialise le formulaire après une soumission réussie
-            } catch (error) {
-              console.error(
-                "Error lors de la récupération des données:",
-                error
-              );
-              dispatch(
-                userSlice.actions.setError(
-                  "Impossible de récupérer les données"
-                )
-              );
-            } finally {
-              actions.setSubmitting(false); // Réactive le bouton de soumission
-            }
+            handleOpenModal(values, actions);
           }}
         >
           <Form>
@@ -126,6 +146,14 @@ const HomePage = () => {
               onChange={handleInputChange("department")}
             />
             <button type="submit">Submit</button>
+            <Modal
+              isOpen={isOpen}
+              onClose={handleCloseModal}
+              onConfirm={handleConfirm}
+              title="Confirmation"
+            >
+              <p>Are you sure you want to submit the form?</p>
+            </Modal>
             {loading && <p>Chargement ...</p>}
             {error && <p className="error-message">{error}</p>}
           </Form>

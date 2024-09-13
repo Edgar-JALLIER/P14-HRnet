@@ -9,7 +9,7 @@ import {
   PaginationState,
 } from "@tanstack/react-table";
 import { FormData } from "../utils/interface";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 
 const Table = ({ data }: { data: FormData[] }) => {
   const columns = useMemo(
@@ -31,11 +31,6 @@ const Table = ({ data }: { data: FormData[] }) => {
             ? "Invalid Date"
             : format(date, "dd/MM/yyyy");
         },
-        sortingFn: (rowA, rowB, columnId) => {
-          const dateA = new Date(rowA.getValue(columnId));
-          const dateB = new Date(rowB.getValue(columnId));
-          return dateA.getTime() - dateB.getTime();
-        },
       },
       {
         accessorKey: "startDate",
@@ -45,11 +40,6 @@ const Table = ({ data }: { data: FormData[] }) => {
           return isNaN(date.getTime())
             ? "Invalid Date"
             : format(date, "dd/MM/yyyy");
-        },
-        sortingFn: (rowA, rowB, columnId) => {
-          const dateA = new Date(rowA.getValue(columnId));
-          const dateB = new Date(rowB.getValue(columnId));
-          return dateA.getTime() - dateB.getTime();
         },
       },
       {
