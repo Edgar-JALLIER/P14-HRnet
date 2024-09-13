@@ -7,7 +7,7 @@ import "react-calendar/dist/Calendar.css";
 import InputText from "../components/InputText";
 import { useEffect, useState } from "react";
 import { initialFormValues } from "../utils/initialValues";
-import { City, FormData, RootState } from "../utils/interface";
+import { FormData, RootState } from "../utils/interface";
 import { Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
