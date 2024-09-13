@@ -2,12 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { ErrorMessage, Field, useFormikContext } from "formik";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { format, parse, isValid } from "date-fns";
+import { format, isValid } from "date-fns";
+interface FormValues {
+  [key: string]: string | Date;
+}
 
 const CalendarInput: React.FC<{ name: string }> = ({ name }) => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
-  const formik = useFormikContext();
+  const formik = useFormikContext<FormValues>();
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
   };
@@ -60,7 +63,7 @@ const CalendarInput: React.FC<{ name: string }> = ({ name }) => {
       {showCalendar && (
         <div className="calendar-container">
           <Calendar
-            onChange={handleDateChange}
+            onChange={(e) => handleDateChange(e as Date)}
             value={
               isValid(new Date(formik.values[name]))
                 ? new Date(formik.values[name])

@@ -5,6 +5,7 @@ const initialState: UserState = {
   userInfo: [],
   loading: false,
   error: false,
+  hasLoadedFakeData: false,
 };
 
 const userSlice = createSlice({
@@ -12,7 +13,11 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     loadFakeData: (state, action) => {
-      state.userInfo = action.payload.users;
+      if (!state.hasLoadedFakeData) {
+        // Ne charge que si les fake-data ne sont pas encore chargées
+        state.userInfo = [...state.userInfo, ...action.payload.users];
+        state.hasLoadedFakeData = true; // Marquer comme chargé
+      }
     },
     setNewUser: (state, action: PayloadAction<FormData>) => {
       state.userInfo.push(action.payload);

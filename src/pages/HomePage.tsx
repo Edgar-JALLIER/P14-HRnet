@@ -16,6 +16,9 @@ import Modal from "modal-react-classico";
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const hasLoadedFakeData = useSelector(
+    (state: RootState) => state.user.hasLoadedFakeData
+  );
   const loading = useSelector((state) => (state as RootState).user.loading);
   const error = useSelector((state) => (state as RootState).user.error);
   const [formData, setFormData] = useState(initialFormValues);
@@ -25,17 +28,27 @@ const HomePage = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    fetch("/fake-data.json")
-      .then((response) => response.json())
-      .then((data) => {
-        dispatch(userSlice.actions.loadFakeData(data));
-      });
-  }, [dispatch]);
+    const loadData = async () => {
+      try {
+        const response = await fetch("/fake-data.json");
+        const data = await response.json();
+
+        // Ne charge les fake-data que si elles ne sont pas déjà dans le store
+        if (!hasLoadedFakeData) {
+          dispatch(userSlice.actions.loadFakeData({ users: data.users }));
+        }
+      } catch (error) {
+        dispatch(userSlice.actions.setError(true));
+      }
+    };
+    loadData();
+  }, [dispatch, hasLoadedFakeData]);
 
   const handleOpenModal = (
     values: FormData,
     actions: FormikHelpers<FormData>
   ) => {
+    console.log("Opening modal with form data:", values);
     setFormData(values);
     setFormActions(actions);
     setIsOpen(true);
@@ -84,13 +97,6 @@ const HomePage = () => {
       .required("Zip code is required"),
   });
 
-  const handleInputChange =
-    (name: string) => (value: string | Date | City | null) => {
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    };
   return (
     <>
       <div className="title">
@@ -130,21 +136,13 @@ const HomePage = () => {
               <InputText name="city" label={"City"} />
 
               <label htmlFor="state">State</label>
-              <SelectedButton
-                name="state"
-                options={states}
-                onChange={handleInputChange("state")}
-              />
+              <SelectedButton name="state" options={states} />
 
               <InputText name="zipCode" label={"Zipcode"} />
             </fieldset>
 
             <label htmlFor="department">Department</label>
-            <SelectedButton
-              name="department"
-              options={department}
-              onChange={handleInputChange("department")}
-            />
+            <SelectedButton name="department" options={department} />
             <button type="submit">Submit</button>
             <Modal
               isOpen={isOpen}

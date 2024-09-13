@@ -25,6 +25,7 @@ export interface UserState {
   userInfo: FormData[];
   loading: boolean;
   error: boolean;
+  hasLoadedFakeData: boolean;
 }
 
 export interface RootState {
